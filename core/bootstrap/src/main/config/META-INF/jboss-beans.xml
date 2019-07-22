@@ -135,7 +135,7 @@
             <parameter>
                 <inject bean="GMLC_SccpStack" property="sccpProvider" />
             </parameter>
-            <parameter>145</parameter>
+            <parameter>147</parameter>
         </constructor>
 		<property name="persistDir">${jboss.server.data.dir}</property>
         <!--
