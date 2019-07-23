@@ -156,7 +156,7 @@
 	<!--	<get dest="${ant.file.restcomm.release}/../${jain-slee.http.distro.zip.path}" src="${jain-slee.http.download.url}" />  -->
 		<exec failonerror="true" executable="wget">
 		    <arg value="${jain-slee.http.download.url}" />
-		    <arg value="--output-document=${jain-slee.http.ditro.zip.path}" />
+		    <arg value="--output-document=${jain-slee.http.distro.zip.path}" />
 		</exec>
 	<!--	<move file="./jain-slee.http-${jain-slee.http.download.distro.file}" todir="${checkout.dir}"/> -->
 	</target>
