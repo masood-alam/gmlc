@@ -36,6 +36,31 @@
 
  	<property name="restcomm-slee.package.name" value="jain-slee-${restcomm-slee.version}.${restcomm-slee.build-number}" />
 
+
+	<property name="dialogic-gctapi.version" value="6.7.1"/>
+        <property name="dialogic-dpklnx.download.url" value="https://www.dialogic.com/files/DSI/developmentpackages/linux/dpklnx.Z" />
+        <property name="dialogic-dpklnx.distro.zip.path" value="${checkout.dir}/dpklnx.Z" />
+
+        <property name="dialogic-gctapi.download.distro.file.path" value="JAVA" />
+        <property name="dialogic-gctapi.distro.path" value="${checkout.dir}/${dialogic-gctapi.download.distro.file.path}/gctapi.jar" />
+
+        <property name="jmxtools.version" value="1.2.1" />
+        <property name="jmxtools.download.distro.file" value="jmxtools-${jmxtools.version}.jar" />
+        <property name="jmxtools.download.url" value="http://www.datanucleus.org/downloads/maven2/com/sun/jdmk/jmxtools/1.2.1/jmxtools-1.2.1.jar" />
+        <property name="jmxtools.distro.path" value="${basedir}/${jmxtools.download.distro.file}" />
+
+
+ 	<property name="restcomm-jss7.build-number" value="102"/>
+        <property name="restcomm-jss7.version" value="7.4.0-${restcomm-jss7.build-number}"/>
+        <property name="restcomm-jss7.release" value="7.4.0-102"/>
+
+        <property name="restcomm-jss7.download.distro.file" value="jss7-${restcomm-jss7.version}.zip" />
+        <property name="restcomm-jss7.download.url" value="${github.url}/jss7/archive/${restcomm-jss7.version}.zip" />
+        <property name="restcomm-jss7.distro.zip.path" value="${checkout.dir}/${restcomm-jss7.download.distro.file}" />
+        <property name="restcomm-jss7.package.name" value="jss7-${restcomm-jss7.version}" />
+
+
+
 	<property name="jain-slee.http.release" value="2.8.14" />
 	<property name="jain-slee.http.download.distro.name" value="${jain-slee.http.release}" />
 	<property name="jain-slee.http.download.distro.file" value="${jain-slee.http.download.distro.name}.zip" />
@@ -150,6 +175,93 @@
 	<!--	<move file="./jolokia.war" todir="${jboss.home}/server/default/deploy" /> -->
 	</target>
 
+
+
+	<available file="${dialogic-dpklnx.distro.zip.path}" property="got.dpklnx" />
+        <target name="get-dpklnx" unless="got.dpklnx">
+                <echo>Is dialogic dpklnx : ${dialogic-dpklnx.distro.zip.path} </echo>
+                <echo>Downloading restcomm jss7 version: ${restcomm-jss7.version}</echo>
+                <exec failonerror="true" executable="wget">
+                        <arg value="${dialogic-dpklnx.download.url}" />
+                        <arg value="--output-document=${dialogic-dpklnx.distro.zip.path}" />
+                </exec>
+        <!--    <move file="./${restcomm-jss7.download.distro.file}" todir="${checkout.dir}" /> -->
+        </target>
+
+ 	<available file="${restcomm-jss7.distro.zip.path}" property="got.restcomm-jss7" />
+        <target name="get-restcomm-jss7" unless="got.restcomm-jss7">
+                <echo>Is restcomm jss7 : ${restcomm-jss7.distro.zip.path} present ${got.restcomm-jss7}</echo>
+                <echo>Downloading restcomm jss7 version: ${restcomm-jss7.version}</echo>
+                <exec failonerror="true" executable="wget">
+                        <arg value="${restcomm-jss7.download.url}" />
+                        <arg value="--output-document=${restcomm-jss7.distro.zip.path}" />
+                </exec>
+        <!--    <move file="./${restcomm-jss7.download.distro.file}" todir="${checkout.dir}" /> -->
+        </target>
+
+  	<target name="unzip-restcomm-jss7" >
+                <delete dir="${checkout.dir}/jss7-${restcomm-jss7.version}" failonerror="false" />
+                <unzip src="${restcomm-jss7.distro.zip.path}" dest="${checkout.dir}"/>
+        </target>
+
+
+         <available file="${jmxtools.distro.path}" property="got.jmxtools" />
+        <target name="get-jmxtools" unless="got.jmxtools">
+                <echo>Is jmxtools : ${jmxtools.distro.path} present </echo>
+                <echo>Downloading jmxtools version: ${jmxtools.version}</echo>
+                <exec failonerror="true" executable="wget">
+                        <arg value="${jmxtools.download.url}" />
+                        <arg value="--output-document=${jmxtools.distro.path}" />
+                </exec>
+        <!--    <move file="./${restcomm-jss7.download.distro.file}" todir="${checkout.dir}" /> -->
+        </target>
+
+  	<target name="install-jmxtools" description="">
+
+        <exec failonerror="true" executable="${mvn.executable}" dir="${basedir}">
+            <arg line="install:install-file -DgroupId=com.sun.jdmk -DartifactId=jmxtools -Dversion=${jmxtools.version} -Dpackaging=jar -Dfile=${jmxtools.distro.path}" />
+                </exec>
+
+        </target>
+
+
+        <target name="install-gctapi" description="">
+
+        <exec failonerror="true" executable="${mvn.executable}" dir="${basedir}">
+            <arg line="install:install-file -DgroupId=com.vendor.dialogic -DartifactId=gctapi -Dversion=6.7.1 -Dpackaging=jar -Dfile=${basedir}/gctapi-6.7.1.jar" />
+                </exec>
+
+        </target>
+
+ 	<target name="build-restcomm-jss7" description="">
+
+                <exec failonerror="true" executable="${mvn.executable}" dir="${checkout.dir}/${restcomm-jss7.package.name}">
+                        <arg line="package -Dmaven.test.skip=true -Drelease.dir=${release.dir} -Djboss.home=${jboss.home} -Djboss.path=../../${jboss.home.relative.path}" />
+                </exec>
+        </target>
+
+
+ 	<target name="install-restcomm-jss7-oam" description="">
+
+                <exec failonerror="true" executable="${mvn.executable}" dir="${checkout.dir}/${restcomm-jss7.package.name}/oam">
+                        <arg line="install -P deploy-module-jboss5 -Dmaven.test.skip=true -Drelease.dir=${release.dir} -Djboss.home=${jboss.home} -Djboss.path=../../${jboss.home.relative.path}" />
+                </exec>
+<!--
+	<copy file="${checkout.dir}/${restcomm-jss7.package.name}/oam/new-ui/target/jss7-management-console.war" tofile="${jboss.home}/server/default/deploy/jss7-management-console.war" overwrite="true" />
+-->
+        </target>
+
+ 	<target name="install-restcomm-jss7-mgmt" description="">
+
+                <exec failonerror="true" executable="${mvn.executable}" dir="${checkout.dir}/${restcomm-jss7.package.name}/management">
+                        <arg line="install -P deploy-module-jboss5 -Dmaven.test.skip=true -Drelease.dir=${release.dir} -Djboss.home=${jboss.home} -Djboss.path=../../${jboss.home.relative.path}" />
+                </exec>
+<!--
+	<copy file="${checkout.dir}/${restcomm-jss7.package.name}/oam/new-ui/target/jss7-management-console.war" tofile="${jboss.home}/server/default/deploy/jss7-management-console.war" overwrite="true" />
+-->
+        </target>
+
+
 	<available file="${jain-slee.http.distro.zip.path}" property="got.http" />
 	<target name="get-http" unless="got.http">
 		<echo>Downloading Jain-slee.http</echo>
@@ -225,7 +337,7 @@
 	</target>
 
 
-	<target name="release" depends="clean,get-jboss,unzip-jboss,get-jolokia,get-slee,unzip-slee,build-slee,build-slee-tools,get-http,unzip-http,build-http,get-slee-ss7,unzip-slee-ss7,build-slee-ss7,get-gmlc,unzip-gmlc,build-gmlc">
+	<target name="release" depends="get-jboss,unzip-jboss,get-jolokia,get-slee,unzip-slee,build-slee,build-slee-tools,get-restcomm-jss7,unzip-restcomm-jss7,install-gctapi,get-jmxtools,install-jmxtools,get-http,unzip-http,build-http,get-slee-ss7,unzip-slee-ss7,build-slee-ss7,get-gmlc,unzip-gmlc,build-gmlc">
 
 		<!-- copy log4j presets -->
 		<copy file="${jboss.home}/server/default/deploy/restcomm-slee/log4j-templates/jboss-log4j.xml.default" tofile="${jboss.home}/server/default/conf/jboss-log4j.xml" overwrite="true" />
