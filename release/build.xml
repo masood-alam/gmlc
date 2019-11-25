@@ -37,10 +37,12 @@
  	<property name="restcomm-slee.package.name" value="jain-slee-${restcomm-slee.version}.${restcomm-slee.build-number}" />
 
 
+	<!-- first we download dpklnx.Z from dialogic site -->
 	<property name="dialogic-gctapi.version" value="6.7.1"/>
         <property name="dialogic-dpklnx.download.url" value="https://www.dialogic.com/files/DSI/developmentpackages/linux/dpklnx.Z" />
         <property name="dialogic-dpklnx.distro.zip.path" value="${checkout.dir}/dpklnx.Z" />
 
+	<!-- then we extract dpklnx.Z JAVA folder only -->
         <property name="dialogic-gctapi.download.distro.file.path" value="JAVA" />
         <property name="dialogic-gctapi.distro.path" value="${checkout.dir}/${dialogic-gctapi.download.distro.file.path}/gctapi.jar" />
 
@@ -188,6 +190,27 @@
         <!--    <move file="./${restcomm-jss7.download.distro.file}" todir="${checkout.dir}" /> -->
         </target>
 
+
+	<!--  tar -zxvf ./dpklnx.Z JAVA -->
+  	<target name="unzip-dpklnx" >
+          <!--      <delete dir="${dialogic-dpklnx.distro.zip.path}" failonerror="false" />  -->
+                <exec executable="tar">
+			<arg value="-zxvf"/>
+			<arg value="${dialogic-dpklnx.distro.zip.path}"/>
+			<arg value="JAVA"/>
+		</exec>
+        </target>
+
+
+        <target name="install-gctapi" description="">
+
+        <exec failonerror="true" executable="${mvn.executable}" dir="${basedir}">
+            <arg line="install:install-file -DgroupId=com.vendor.dialogic -DartifactId=gctapi -Dversion=6.7.1 -Dpackaging=jar -Dfile=${basedir}/JAVA/gctApi.jar" />
+                </exec>
+
+        </target>
+
+
  	<available file="${restcomm-jss7.distro.zip.path}" property="got.restcomm-jss7" />
         <target name="get-restcomm-jss7" unless="got.restcomm-jss7">
                 <echo>Is restcomm jss7 : ${restcomm-jss7.distro.zip.path} present ${got.restcomm-jss7}</echo>
@@ -225,13 +248,6 @@
         </target>
 
 
-        <target name="install-gctapi" description="">
-
-        <exec failonerror="true" executable="${mvn.executable}" dir="${basedir}">
-            <arg line="install:install-file -DgroupId=com.vendor.dialogic -DartifactId=gctapi -Dversion=6.7.1 -Dpackaging=jar -Dfile=${basedir}/gctapi-6.7.1.jar" />
-                </exec>
-
-        </target>
 
  	<target name="build-restcomm-jss7" description="">
 
@@ -337,7 +353,7 @@
 	</target>
 
 
-	<target name="release" depends="get-jboss,unzip-jboss,get-jolokia,get-slee,unzip-slee,build-slee,build-slee-tools,get-restcomm-jss7,unzip-restcomm-jss7,install-gctapi,get-jmxtools,install-jmxtools,get-http,unzip-http,build-http,get-slee-ss7,unzip-slee-ss7,build-slee-ss7,get-gmlc,unzip-gmlc,build-gmlc">
+	<target name="release" depends="get-jboss,unzip-jboss,get-jolokia,get-slee,unzip-slee,build-slee,build-slee-tools,get-restcomm-jss7,unzip-restcomm-jss7,get-dpklnx,unzip-dpklnx,install-gctapi,get-jmxtools,install-jmxtools,get-http,unzip-http,build-http,get-slee-ss7,unzip-slee-ss7,build-slee-ss7,get-gmlc,unzip-gmlc,build-gmlc">
 
 		<!-- copy log4j presets -->
 		<copy file="${jboss.home}/server/default/deploy/restcomm-slee/log4j-templates/jboss-log4j.xml.default" tofile="${jboss.home}/server/default/conf/jboss-log4j.xml" overwrite="true" />
