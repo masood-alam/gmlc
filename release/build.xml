@@ -353,7 +353,7 @@
 	</target>
 
 
-	<target name="release" depends="get-jboss,unzip-jboss,get-jolokia,get-slee,unzip-slee,build-slee,build-slee-tools,get-restcomm-jss7,unzip-restcomm-jss7,get-dpklnx,unzip-dpklnx,install-gctapi,get-jmxtools,install-jmxtools,get-http,unzip-http,build-http,get-slee-ss7,unzip-slee-ss7,build-slee-ss7,get-gmlc,unzip-gmlc,build-gmlc">
+	<target name="release" depends="get-jboss,unzip-jboss,get-jolokia,get-slee,unzip-slee,build-slee,build-slee-tools,get-restcomm-jss7,unzip-restcomm-jss7,install-restcomm-jss7-mgmt,install-restcomm-jss7-oam,get-dpklnx,unzip-dpklnx,install-gctapi,get-jmxtools,install-jmxtools,get-http,unzip-http,build-http,get-slee-ss7,unzip-slee-ss7,build-slee-ss7,get-gmlc,unzip-gmlc,build-gmlc">
 
 		<!-- copy log4j presets -->
 		<copy file="${jboss.home}/server/default/deploy/restcomm-slee/log4j-templates/jboss-log4j.xml.default" tofile="${jboss.home}/server/default/conf/jboss-log4j.xml" overwrite="true" />

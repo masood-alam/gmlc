@@ -1,16 +1,38 @@
 
-[Try Restcomm Cloud NOW for FREE!](https://www.restcomm.com/sign-up/) Zero download and install required.
+Restcomm Gateway Mobile Location Centre (GMLC)
+=============================================
+
+The **GMLC** enables offering Location Based Services (LBS) involving mobile subscribers roaming accross either legacy GSM or UMTS/HSPA+ networks, or Next Generation Networks like LTE/LTE-Advanced.
+
+GMLC is built on [RestComm jSS7](https://github.com/RestComm/jSS7).
+
+Dependencies
+------------
+1. Java 7 runtime environment
+2. Apache maven (3.3.9 or above)
+3. Apache ant (1.8 or above)
 
 
-All Restcomm [docs](https://www.restcomm.com/docs/) and [downloads](https://www.restcomm.com/downloads/) are now available at [Restcomm.com](https://www.restcomm.com).
+*Installation*
+------------
+From the release folder run "ant release".
+It will download the stack binaries such as jboss-5.1.0.GA, jain-slee, jss7 etc.
+
+Finally it will build the jboss-5.1.0.GA-gmlc.zip
+
+This zip file can be used with docker project [ubuntu-jboss-gmlc](http://10.120.10.234/masoodalam/ubuntu-jboss-gmlc).
+
+Or this zip file can be extracted in root folder and run as standalone application.
 
 
-Restcomm Location Server (GMLC)
-============
+*Running as Standalone Application*
+-----------------------------------
+unzip the archive file
 
-[![Join the chat at https://gitter.im/RestComm/gmlc](https://badges.gitter.im/RestComm/gmlc.svg)](https://gitter.im/RestComm/gmlc?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-The Gateway Mobile Location Centre enables offering Location Based Services (LBS) involving mobile subscribers roaming accross either legacy GSM or UMTS/HSPA+ networks, or Next Generation Networks like LTE/LTE-Advanced.
+~$unzip gmlc/release/jboss-5.1.0.GA-gmlc.zip
 
-In one PLMN (Public Land Mobile Network), there may be more than one GMLC. The GMLC is the first node an external LCS client accesses in a GSM, UMTS or LTE network. The GMLC may request routing information from the HLR (Home Location register) or HSS (Home Subscriber Server). After performing registration authorization, it sends positioning requests to either the VMSC (Visited Mobile Switching Centre), SGSN (Serving GPRS Support Node) MSC (Mobile Switching Centre) Server or MME (Mobility Management Entity) and receives final location estimates from the corresponding network node. Furthermore, it may receive mobile subscriber location reports on event based deferred location requests.
+run bin/run.sh script
 
-GMLC is built on [RestComm jSS7](https://github.com/RestComm/jSS7) and [RestComm jDiameter](https://github.com/RestComm/jdiameter).
+visit http://localhost:8080/jss7-mangamgent-console in the Browser
+configure sctp, mtp3, sccp stack parameters
+ 
